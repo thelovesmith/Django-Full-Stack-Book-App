@@ -6,11 +6,13 @@ from .models import Book
 
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 ## This will help in the parsing/creating of json
 import json
 
 # Create your views here.
+
 class Books(View):
     ## inheriting from the view class
     ## For testing purposes/for development
@@ -21,7 +23,7 @@ class Books(View):
 
 
 
-
+    @method_decorator(ensure_csrf_cookie)
     def get(self, request):
         ### .values returns what is called a value
         ## query set, which basically a list of dictionaries
@@ -38,7 +40,7 @@ class Books(View):
             }, safe=False)
 
 
-
+    @method_decorator(ensure_csrf_cookie)
     def post(self, request):
         # read the body of the request (think, body-parser)
         #but not middleware
@@ -70,7 +72,7 @@ class Book_detail(View):
     #     return super(Book_detail, self).dispatch(request, *args, **kwargs)
 
 
-
+    @method_decorator(ensure_csrf_cookie)
     def get(self, request, pk):
         ## Reason we have to do this is to make it
         ## JSONifiable
@@ -78,7 +80,7 @@ class Book_detail(View):
         print(Book.objects.filter(pk=pk).values(), ' this is .values in the get')
         return JsonResponse({"data": book_list}, safe=False)
 
-
+    @method_decorator(ensure_csrf_cookie)
     def put(self, request, pk):
         data = request.body.decode('utf-8')
         ### this below will give us a dictonary we can work with
@@ -115,7 +117,7 @@ class Book_detail(View):
 
 
 
-
+    @method_decorator(ensure_csrf_cookie)
     def delete(self, request, pk):
         try:
             # we find it
